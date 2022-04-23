@@ -1,6 +1,4 @@
-import 'package:flutter/material.dart';
-
-class User extends StatelessWidget {
+class User {
   String username;
   String email;
   String name;
@@ -8,11 +6,15 @@ class User extends StatelessWidget {
 
   User(this.idUser, this.name, this.email, this.username);
 
-  
-  @override
-  Widget build(BuildContext context) {
-    // TODO: implement build
+  void clearUserInfo() {
+    User(-1, "", "", "");
+  }
 
-    throw UnimplementedError();
+  User getUserInfo() {
+    return User(idUser, name, email, username);
+  }
+
+  int getUserID() {
+    return idUser;
   }
 }

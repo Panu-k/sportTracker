@@ -16,21 +16,32 @@ class _LoginpageState extends State<Loginpage> {
   final _usernameController = TextEditingController();
 
   final _passwordController = TextEditingController();
+  bool haveUser = false;
 
   getUserData() async {
-    var response = await http.get(Uri.http('10.0.2.2:3002', 'users'));
-    var jsondata = jsonDecode(response.body);
-
-    print(jsondata.toString());
-    List<User> users = [];
-
-    for (var u in jsondata) {
-      User user = User(u["idUsers"], u["Name"], u["Email"], u["UserName"]);
-      users.add(user);
+    User user;
+    if (_usernameController.text.isNotEmpty &&
+        _passwordController.text.isNotEmpty) {
+      var name = _usernameController.text;
+      var pass = _passwordController.text;
+      try {
+        var response = await http.get(Uri.http(
+          '10.0.2.2:3002',
+          'check',
+          {'username': name, 'password': pass},
+        ));
+        var jsondata = jsonDecode(response.body);
+        if (jsondata[0] != null) {
+          print(jsondata.toString());
+          haveUser = true;
+          user = User(jsondata["idUsers"], jsondata["Name"], jsondata["Email"],
+              jsondata["UserName"]);
+          return true;
+        }
+      } catch (e) {
+        return false;
+      }
     }
-    print(users[0].name);
-
-    return users;
   }
 
   @override
@@ -78,14 +89,17 @@ class _LoginpageState extends State<Loginpage> {
                                 height: 20,
                               ),
                               ElevatedButton(
-                                  onPressed: () {
-                                    getUserData();
-                                    //Navigator.push(
-                                    //  context,
-                                    // MaterialPageRoute(
-                                    //    builder: (context) =>
-                                    //       const MyHomePage(
-                                    //          title: "Flutter Demo")));
+                                  onPressed: () async {
+                                    await getUserData();
+                                    print(haveUser);
+                                    if (haveUser) {
+                                      Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  const MyHomePage(
+                                                      title: "Flutter Demo")));
+                                    }
                                   },
                                   child: Text("Sing in"))
                             ],
