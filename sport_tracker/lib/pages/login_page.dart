@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:sport_tracker/main.dart';
 import 'package:http/http.dart' as http;
-import 'package:sport_tracker/user.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:sport_tracker/models/user.dart';
+import 'list_page.dart';
 
 // ignore: use_key_in_widget_constructors
 class Loginpage extends StatefulWidget {
@@ -12,13 +14,14 @@ class Loginpage extends StatefulWidget {
 
 class _LoginpageState extends State<Loginpage> {
   final formKey = GlobalKey<FormState>();
+  final Future<SharedPreferences> prefs = SharedPreferences.getInstance();
 
   final _usernameController = TextEditingController();
-
   final _passwordController = TextEditingController();
   bool haveUser = false;
 
   getUserData() async {
+    final prefs = await SharedPreferences.getInstance();
     User user;
     if (_usernameController.text.isNotEmpty &&
         _passwordController.text.isNotEmpty) {
@@ -32,10 +35,11 @@ class _LoginpageState extends State<Loginpage> {
         ));
         var jsondata = jsonDecode(response.body);
         if (jsondata[0] != null) {
-          print(jsondata.toString());
           haveUser = true;
-          user = User(jsondata["idUsers"], jsondata["Name"], jsondata["Email"],
-              jsondata["UserName"]);
+          for (var u in jsondata) {
+            user = User(u["idUsers"], u["Name"], u["Email"], u["UserName"]);
+            prefs.setInt("idUser", user.idUser);
+          }
           return true;
         }
       } catch (e) {
@@ -97,8 +101,20 @@ class _LoginpageState extends State<Loginpage> {
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                                  const MyHomePage(
-                                                      title: "Flutter Demo")));
+                                                  ListPage()));
+                                    } else {
+                                      showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            Future.delayed(Duration(seconds: 2),
+                                                () {
+                                              Navigator.of(context).pop(true);
+                                            });
+                                            return AlertDialog(
+                                              title: Text(
+                                                  "Username or password wrong"),
+                                            );
+                                          });
                                     }
                                   },
                                   child: Text("Sing in"))
