@@ -2,8 +2,10 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sport_tracker/main.dart';
 
 import 'package:sport_tracker/models/user.dart';
+import 'package:sport_tracker/pages/settings_page.dart';
 import 'list_page.dart';
 
 // ignore: use_key_in_widget_constructors
@@ -36,8 +38,10 @@ class _LoginpageState extends State<Loginpage> {
         var jsondata = jsonDecode(response.body);
         if (jsondata[0] != null) {
           haveUser = true;
+          _passwordController.text = '';
           for (var u in jsondata) {
-            user = User(u["idUsers"], u["Name"], u["Email"], u["UserName"]);
+            user =
+                User(u["idUsers"], u["Name"], u["Email"], u["UserName"], false);
             prefs.setInt("idUser", user.idUser);
           }
           return true;
@@ -97,11 +101,12 @@ class _LoginpageState extends State<Loginpage> {
                                     await getUserData();
                                     print(haveUser);
                                     if (haveUser) {
+                                      FocusScope.of(context).unfocus();
                                       Navigator.push(
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                                  ListPage()));
+                                                  TabbarPage()));
                                     } else {
                                       showDialog(
                                           context: context,
@@ -110,9 +115,9 @@ class _LoginpageState extends State<Loginpage> {
                                                 () {
                                               Navigator.of(context).pop(true);
                                             });
-                                            return AlertDialog(
+                                            return const AlertDialog(
                                               title: Text(
-                                                  "Username or password wrong"),
+                                                  "Username or password was wrong, \r\n Please try again"),
                                             );
                                           });
                                     }

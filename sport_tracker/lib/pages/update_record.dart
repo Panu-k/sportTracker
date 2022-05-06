@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:time_range/time_range.dart';
+
 import 'package:sport_tracker/models/records.dart';
 
 class RecordPage extends StatelessWidget {
@@ -7,9 +7,6 @@ class RecordPage extends StatelessWidget {
   final Records record;
 
   RecordPage(this.record);
-  static const orange = Color(0xFFFE9A75);
-  static const dark = Color(0xFF333A47);
-  static const gray = Color.fromARGB(255, 70, 70, 70);
 
   @override
   Widget build(BuildContext context) {
@@ -47,37 +44,17 @@ class RecordPage extends StatelessWidget {
                             SizedBox(
                               height: 20,
                             ),
-                            TimeRange(
-                              fromTitle: Text(
-                                'From',
-                                style: TextStyle(fontSize: 18, color: gray),
-                              ),
-                              toTitle: Text(
-                                'To',
-                                style: TextStyle(fontSize: 18, color: gray),
-                              ),
-                              titlePadding: 20,
-                              textStyle: TextStyle(
-                                  fontWeight: FontWeight.normal,
-                                  color: Colors.black87),
-                              activeTextStyle: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white),
-                              borderColor: dark,
-                              backgroundColor: Colors.transparent,
-                              activeBackgroundColor: orange,
-                              firstTime: TimeOfDay(hour: 01, minute: 30),
-                              lastTime: TimeOfDay(hour: 24, minute: 00),
-                              timeStep: 10,
-                              timeBlock: 10,
-                              onRangeCompleted: (range) => print(range),
-                            ),
+                            ElevatedButton(
+                                onPressed: () {
+                                  
+                                },
+                                child: Text(record.time)),
                             SizedBox(
                               height: 20,
                             ),
                             TextFormField(
                               keyboardType: TextInputType.multiline,
-                              maxLines: 6,
+                              maxLines: 4,
                               initialValue: record.infotext,
                               decoration:
                                   const InputDecoration(labelText: "Info"),
@@ -91,7 +68,4 @@ class RecordPage extends StatelessWidget {
           ],
         ));
   }
-
-  //https://medium.flutterdevs.com/date-and-time-picker-in-flutter-72141e7531c
-
 }
