@@ -4,9 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:time_range_picker/time_range_picker.dart';
 
-import 'package:sport_tracker/models/records.dart';
-import 'package:sport_tracker/pages/list_page.dart';
-
 class NewRecordPage extends StatefulWidget {
   const NewRecordPage();
 
@@ -24,7 +21,7 @@ class _NewRecordPageState extends State<NewRecordPage> {
 
   static const double height = 20;
 
-  DateTime? _dateTime = null;
+  DateTime? _date = null;
 
   String? _time = null;
 
@@ -61,7 +58,7 @@ class _NewRecordPageState extends State<NewRecordPage> {
                               children: [
                                 ElevatedButton(
                                     onPressed: () async {
-                                      _dateTime = await showDatePicker(
+                                      _date = await showDatePicker(
                                           context: context,
                                           initialDate: DateTime.now(),
                                           firstDate: DateTime(2020),
@@ -98,7 +95,7 @@ class _NewRecordPageState extends State<NewRecordPage> {
                                 onPressed: () async {
                                   await _newRecord();
 
-                                  //Navigator.of(context).pop();
+                                  Navigator.of(context).pop();
                                 },
                                 child: Text("Save record"))
                           ],
@@ -146,27 +143,37 @@ class _NewRecordPageState extends State<NewRecordPage> {
 
   _newRecord() async {
     final prefs = await SharedPreferences.getInstance();
-    if (_sportController.text.isNotEmpty &&
-        _infoController.text.isNotEmpty &&
-        _time != null &&
-        _dateTime != null) {
-      var user = prefs.getInt("idUser");
-      var time = _time;
-      var date = _dateTime;
-      var text = _infoController.text;
-      var sport = _sportController.text;
+    Map<String, dynamic> params;
+    var time, date, sport, distance, text = null;
 
-      var sportid = prefs.getInt(sport);
-      try {
-        var response = await http.post(Uri.http(
-          '10.0.2.2:3002',
-          'records',
-          {'idSports': '', 'password': 'pass'},
-        ));
-        return true;
-      } catch (e) {
-        return false;
+    if (_sportController.text.isNotEmpty && _date != null) {
+      var user = prefs.getInt("idUser");
+      sport = _sportController.text;
+      var sportid = prefs.getInt(sport).toString();
+      var da = _date.toString().split(' ');
+      date = da.removeAt(0);
+      params = {'idSports': sportid, 'Date': date, 'idUsers': user.toString()};
+      if (_time != null) {
+        time = <String, dynamic>{'Time': _time};
+        params.addAll(time);
       }
+
+      if (_infoController.text.isNotEmpty) {
+        text = _infoController.text;
+        params.addAll(<String, dynamic>{'Text': text});
+      }
+
+      if (_distanceController.text.isNotEmpty) {
+        distance = _distanceController.text;
+        params.addAll(<String, dynamic>{'Dicstance': distance});
+      }
+
+      var url = Uri.parse('http://10.0.2.2:3002/records');
+      var response = await http.post(
+        url,
+        body: params,
+      );
+      print(response.body);
     }
   }
 }

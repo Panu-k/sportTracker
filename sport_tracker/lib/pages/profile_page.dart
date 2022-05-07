@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:sport_tracker/models/user.dart';
 
 class ProfilePage extends StatelessWidget {
   const ProfilePage({Key? key}) : super(key: key);
 
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -16,7 +18,11 @@ class ProfilePage extends StatelessWidget {
       ),
       body: ListView(
         physics: BouncingScrollPhysics(),
-        children: [],
+        children: [
+          Column(
+            children: [Text('')],
+          )
+        ],
       ),
     );
   }
