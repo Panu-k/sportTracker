@@ -143,6 +143,7 @@ class SingupPage extends StatelessWidget {
                                   ),
                                   ElevatedButton(
                                       onPressed: () async {
+                                        FocusScope.of(context).unfocus();
                                         var res = await _NewUser();
                                         if (res == "Succesful") {
                                           showDialog(
@@ -158,6 +159,23 @@ class SingupPage extends StatelessWidget {
                                                 );
                                               });
                                           Navigator.pop(context);
+                                        } else if (res
+                                            .toString()
+                                            .contains("Duplicate")) {
+                                          showDialog(
+                                              context: context,
+                                              builder: (context) {
+                                                Future.delayed(
+                                                    Duration(seconds: 2), () {
+                                                  Navigator.of(context)
+                                                      .pop(true);
+                                                });
+                                                return const AlertDialog(
+                                                  title: Text("Username"),
+                                                  content: Text(
+                                                      'Username is all ready used'),
+                                                );
+                                              });
                                         } else {
                                           showDialog(
                                               context: context,
@@ -187,7 +205,7 @@ class SingupPage extends StatelessWidget {
   }
 
   _NewUser() async {
-    if (_passwordController.text == _password2Controller &&
+    if (_passwordController.text == _password2Controller.text &&
         _passwordController.text.isNotEmpty) {
       Map<String, dynamic> params;
       var name, username, email, passwd = null;
@@ -202,7 +220,7 @@ class SingupPage extends StatelessWidget {
           'name': name,
           'passwd': passwd,
           'email': email,
-          'userName': username
+          'username': username
         };
 
         var url = Uri.parse('http://10.0.2.2:3002/users');

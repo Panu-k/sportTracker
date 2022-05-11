@@ -25,8 +25,10 @@ class _RecordPageState extends State<RecordPage> {
   static const double height = 20;
 
   DateTime? _date;
+  DateTime dateTime = DateTime.now();
 
   String? _sport = null;
+  String? _datetime = null;
   List<DropdownMenuItem<String>>? Sports = [];
   getList() {
     Sports = [];
@@ -48,13 +50,17 @@ class _RecordPageState extends State<RecordPage> {
 
   void Startter() {
     _date = DateTime.parse(widget.records.date);
+    dateTime = DateTime.parse(widget.records.date);
+    _datetime = widget.records.date;
     _sport = widget.records.Sport;
+    _timeController.text = widget.records.time;
     _infoController.text = widget.records.infotext.toString();
     _distanceController.text = widget.records.distance.toString();
   }
 
   @override
   Widget build(BuildContext context) {
+    Startter();
     return WillPopScope(
       onWillPop: () async {
         bool will = await Utils.leavePage(context);
@@ -123,21 +129,25 @@ class _RecordPageState extends State<RecordPage> {
                                       onPressed: () async {
                                         _date = await showDatePicker(
                                             context: context,
-                                            initialDate: DateTime.now(),
+                                            initialDate: dateTime,
                                             firstDate: DateTime(2020),
                                             lastDate: DateTime.now());
                                       },
                                       child: Text("Date")),
                                   SizedBox(
-                                    width: height,
+                                    width: 20,
                                   ),
-                                  TextFormField(
-                                    controller: _timeController,
-                                    keyboardType: TextInputType.text,
-                                    decoration: const InputDecoration(
-                                        labelText: "Time"),
-                                  ),
+                                  Text(_datetime!)
                                 ],
+                              ),
+                              TextFormField(
+                                controller: _timeController,
+                                keyboardType: TextInputType.text,
+                                decoration:
+                                    const InputDecoration(labelText: "Time"),
+                              ),
+                              SizedBox(
+                                height: height,
                               ),
                               TextFormField(
                                 controller: _distanceController,
@@ -148,12 +158,13 @@ class _RecordPageState extends State<RecordPage> {
                               TextFormField(
                                 controller: _infoController,
                                 keyboardType: TextInputType.multiline,
-                                maxLines: 6,
+                                maxLines: 2,
                                 decoration:
                                     const InputDecoration(labelText: "Info"),
                               ),
                               ElevatedButton(
                                   onPressed: () async {
+                                    FocusScope.of(context).unfocus();
                                     bool pop = await _updateRecord();
                                     if (pop) {
                                       Navigator.of(context).pop();
@@ -198,7 +209,7 @@ class _RecordPageState extends State<RecordPage> {
 
         var _record = widget.records.idRecords;
         params = {
-          'idRecords': _record,
+          'idRecords': _record.toString(),
           'idSports': sportid,
           'Date': date,
           'idUsers': user.toString()

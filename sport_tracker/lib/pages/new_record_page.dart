@@ -131,7 +131,8 @@ class _NewRecordPageState extends State<NewRecordPage> {
                                           TimeRange timeRange =
                                               await showTimeRangePicker(
                                                   context: context);
-                                          _time = Utils.Time_Calculator(timeRange);
+                                          _time =
+                                              Utils.Time_Calculator(timeRange);
                                         },
                                         child: Text("Used time")),
                                   ],
@@ -145,7 +146,7 @@ class _NewRecordPageState extends State<NewRecordPage> {
                                 TextFormField(
                                   controller: _infoController,
                                   keyboardType: TextInputType.multiline,
-                                  maxLines: 6,
+                                  maxLines: 2,
                                   decoration:
                                       const InputDecoration(labelText: "Info"),
                                 ),
