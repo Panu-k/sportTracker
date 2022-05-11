@@ -6,7 +6,7 @@ class Records {
   String time;
   String date;
   String? infotext;
-  Double? distance;
+  String? distance;
 
   Records(this.idRecords, this.Sport, this.time, this.date, this.infotext,
       this.distance);

@@ -1,71 +1,232 @@
+import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sport_tracker/models/records.dart';
+import 'package:sport_tracker/pages/new_sport.dart';
+import 'package:sport_tracker/utils/utils.dart';
 
-class RecordPage extends StatelessWidget {
+class RecordPage extends StatefulWidget {
+  RecordPage(this.records, this.listSports, {Key? key}) : super(key: key);
+
+  Records records;
+  List<String> listSports;
+  @override
+  State<RecordPage> createState() => _RecordPageState();
+}
+
+class _RecordPageState extends State<RecordPage> {
   final formKey = GlobalKey<FormState>();
-  final Records record;
 
-  RecordPage(this.record);
+  final prefs = SharedPreferences.getInstance();
+
+  final _infoController = TextEditingController();
+  final _distanceController = TextEditingController();
+  final _timeController = TextEditingController();
+  static const double height = 20;
+
+  DateTime? _date;
+
+  String? _sport = null;
+  List<DropdownMenuItem<String>>? Sports = [];
+  getList() {
+    Sports = [];
+    for (var u in widget.listSports) {
+      Sports!.add(DropdownMenuItem(
+        child: Text(u),
+        value: u,
+      ));
+    }
+  }
+
+  void dropDownCallBack(String? selectedValue) {
+    if (selectedValue is String) {
+      setState(() {
+        _sport = selectedValue;
+      });
+    }
+  }
+
+  void Startter() {
+    _date = DateTime.parse(widget.records.date);
+    _sport = widget.records.Sport;
+    _infoController.text = widget.records.infotext.toString();
+    _distanceController.text = widget.records.distance.toString();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: Text(record.Sport),
-        ),
-        body: Stack(
-          children: <Widget>[
-            Center(
-              child: SingleChildScrollView(
-                child: Form(
-                    key: formKey,
-                    child: Card(
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            TextFormField(
-                              keyboardType: TextInputType.text,
-                              initialValue: record.Sport,
-                              decoration:
-                                  const InputDecoration(labelText: "Sport"),
-                            ),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            TextFormField(
-                              keyboardType: TextInputType.text,
-                              initialValue: record.date,
-                              decoration:
-                                  const InputDecoration(labelText: "Date"),
-                            ),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            ElevatedButton(
-                                onPressed: () {
-                                  
-                                },
-                                child: Text(record.time)),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            TextFormField(
-                              keyboardType: TextInputType.multiline,
-                              maxLines: 4,
-                              initialValue: record.infotext,
-                              decoration:
-                                  const InputDecoration(labelText: "Info"),
-                            ),
-                          ],
+    return WillPopScope(
+      onWillPop: () async {
+        bool will = await Utils.leavePage(context);
+        return will;
+      },
+      child: Scaffold(
+          appBar: AppBar(
+            title: Text("New Record"),
+          ),
+          body: Stack(
+            children: <Widget>[
+              Center(
+                child: SingleChildScrollView(
+                  child: Form(
+                      key: formKey,
+                      child: Card(
+                        color: Color.fromARGB(255, 68, 163, 117),
+                        child: Padding(
+                          padding:
+                              const EdgeInsets.only(left: 16.0, right: 16.0),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: <Widget>[
+                              Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    DecoratedBox(
+                                      decoration: BoxDecoration(
+                                          color: Colors.lightGreen,
+                                          border: Border.all(
+                                              color: Color.fromARGB(
+                                                  255, 48, 48, 48)),
+                                          borderRadius:
+                                              BorderRadius.circular(10)),
+                                      child: DropdownButton(
+                                        items: Sports,
+                                        onChanged: dropDownCallBack,
+                                        hint: _sport == null
+                                            ? Text("Select Sport")
+                                            : Text(_sport!),
+                                      ),
+                                    ),
+                                    SizedBox(
+                                      width: 20,
+                                    ),
+                                    ElevatedButton(
+                                        onPressed: () async {
+                                          bool? plus = await Navigator.push(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      NewSport()));
+                                          if (plus == true) {
+                                            Navigator.pop(context);
+                                          }
+                                        },
+                                        child: Text('Add new Sport'))
+                                  ]),
+                              SizedBox(
+                                height: height,
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  ElevatedButton(
+                                      onPressed: () async {
+                                        _date = await showDatePicker(
+                                            context: context,
+                                            initialDate: DateTime.now(),
+                                            firstDate: DateTime(2020),
+                                            lastDate: DateTime.now());
+                                      },
+                                      child: Text("Date")),
+                                  SizedBox(
+                                    width: height,
+                                  ),
+                                  TextFormField(
+                                    controller: _timeController,
+                                    keyboardType: TextInputType.text,
+                                    decoration: const InputDecoration(
+                                        labelText: "Time"),
+                                  ),
+                                ],
+                              ),
+                              TextFormField(
+                                controller: _distanceController,
+                                keyboardType: TextInputType.text,
+                                decoration: const InputDecoration(
+                                    labelText: "Distance"),
+                              ),
+                              TextFormField(
+                                controller: _infoController,
+                                keyboardType: TextInputType.multiline,
+                                maxLines: 6,
+                                decoration:
+                                    const InputDecoration(labelText: "Info"),
+                              ),
+                              ElevatedButton(
+                                  onPressed: () async {
+                                    bool pop = await _updateRecord();
+                                    if (pop) {
+                                      Navigator.of(context).pop();
+                                    } else {
+                                      await showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            Future.delayed(Duration(seconds: 1),
+                                                () {
+                                              Navigator.of(context).pop(true);
+                                            });
+                                            return AlertDialog(
+                                              title: Text(
+                                                  'Fill all necessary fields, please'),
+                                            );
+                                          });
+                                    }
+                                  },
+                                  child: Text("Save record"))
+                            ],
+                          ),
                         ),
-                      ),
-                    )),
+                      )),
+                ),
               ),
-            ),
-          ],
-        ));
+            ],
+          )),
+    );
+  }
+
+  _updateRecord() async {
+    final prefs = await SharedPreferences.getInstance();
+    Map<String, dynamic> params;
+    var _time, date, sport, distance, text = null;
+    try {
+      if (_sport != null && _date != null) {
+        var user = prefs.getInt("idUser");
+        sport = _sport;
+        var sportid = prefs.getInt(sport).toString();
+        var da = _date.toString().split(' ');
+        date = da.removeAt(0);
+
+        var _record = widget.records.idRecords;
+        params = {
+          'idRecords': _record,
+          'idSports': sportid,
+          'Date': date,
+          'idUsers': user.toString()
+        };
+        if (_timeController.text.isNotEmpty) {
+          _time = _timeController.text;
+          params.addAll(<String, dynamic>{'Time': _time});
+        }
+
+        if (_infoController.text.isNotEmpty) {
+          text = _infoController.text;
+          params.addAll(<String, dynamic>{'Text': text});
+        }
+
+        if (_distanceController.text.isNotEmpty) {
+          distance = _distanceController.text;
+          params.addAll(<String, dynamic>{'Dicstance': distance});
+        }
+
+        var url = Uri.parse('http://10.0.2.2:3002/records');
+        var response = await http.put(
+          url,
+          body: params,
+        );
+        return true;
+      }
+    } catch (e) {
+      return false;
+    }
   }
 }

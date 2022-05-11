@@ -3,7 +3,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sport_tracker/pages/about_page.dart';
 import 'package:sport_tracker/pages/list_page.dart';
 import 'package:sport_tracker/pages/login_page.dart';
-import 'package:sport_tracker/pages/new_record_page.dart';
 import 'package:sport_tracker/pages/settings_page.dart';
 
 Future<void> main() async {
@@ -21,7 +20,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: '',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
@@ -45,6 +44,7 @@ class _TabbarPageState extends State<TabbarPage> {
       length: 3,
       child: Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           title: Container(
             child: TabBar(tabs: [
               Tab(

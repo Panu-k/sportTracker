@@ -18,6 +18,8 @@ class ListPage extends StatefulWidget {
 class _ListPage extends State<ListPage> {
   final Future<SharedPreferences> prefs = SharedPreferences.getInstance();
 
+  List<String> listSports = [];
+
   _getSports() async {
     final prefs = await SharedPreferences.getInstance();
     var response = await http.get(Uri.http('10.0.2.2:3002', 'sports'));
@@ -25,6 +27,7 @@ class _ListPage extends State<ListPage> {
     for (var u in jsondata) {
       await prefs.setString(u["idSports"].toString(), u["Sport"]);
       await prefs.setInt(u["Sport"], u["idSports"]);
+      listSports.add(u['Sport']);
     }
   }
 
@@ -47,7 +50,7 @@ class _ListPage extends State<ListPage> {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                            builder: (context) => NewRecordPage()));
+                            builder: (context) => NewRecordPage(listSports)));
                   }
                 },
                 child: const Icon(Icons.add),
@@ -90,14 +93,16 @@ class _ListPage extends State<ListPage> {
                     child: ListTile(
                       title: Text(snapshot.data[index].Sport),
                       subtitle: Text(snapshot.data[index].date +
-                          " " +
+                          "     " +
                           snapshot.data[index].time),
                       onTap: () {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    RecordPage(snapshot.data[index])));
+                                builder: (context) => RecordPage(
+                                      snapshot.data[index],
+                                      listSports,
+                                    )));
                       },
                     ),
                     background: Container(
@@ -117,8 +122,10 @@ class _ListPage extends State<ListPage> {
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           {
-            Navigator.push(context,
-                MaterialPageRoute(builder: (context) => NewRecordPage()));
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => NewRecordPage(listSports)));
           }
         },
         tooltip: 'New Record',

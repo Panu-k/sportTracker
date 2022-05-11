@@ -1,12 +1,14 @@
 import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sport_tracker/main.dart';
 
 import 'package:sport_tracker/models/user.dart';
-import 'package:sport_tracker/pages/settings_page.dart';
-import 'list_page.dart';
+
+import 'package:sport_tracker/pages/singup_page.dart';
+
 
 // ignore: use_key_in_widget_constructors
 class Loginpage extends StatefulWidget {
@@ -155,7 +157,22 @@ class _LoginpageState extends State<Loginpage> {
                                                   });
                                             }
                                           },
-                                          child: Text("Sing in"))
+                                          child: Text("Sing in")),
+                                      SizedBox(height: 40),
+                                      Row(
+                                        children: [
+                                          Text("Dont have account?"),
+                                          TextButton(
+                                              child: Text("Sing up"),
+                                              onPressed: () {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            SingupPage()));
+                                              }),
+                                        ],
+                                      )
                                     ],
                                   ),
                                 ),
