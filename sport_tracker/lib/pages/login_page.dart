@@ -9,7 +9,6 @@ import 'package:sport_tracker/models/user.dart';
 
 import 'package:sport_tracker/pages/singup_page.dart';
 
-
 // ignore: use_key_in_widget_constructors
 class Loginpage extends StatefulWidget {
   @override
@@ -41,6 +40,7 @@ class _LoginpageState extends State<Loginpage> {
         var jsondata = jsonDecode(response.body);
         if (jsondata[0] != null) {
           haveUser = true;
+          prefs.setString("Pass", pass);
           _passwordController.text = '';
           for (var u in jsondata) {
             user =
