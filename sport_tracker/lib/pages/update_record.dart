@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_init_to_null, non_constant_identifier_names, prefer_typing_uninitialized_variables
+
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -30,7 +32,8 @@ class _RecordPageState extends State<RecordPage> {
   String? _sport = null;
   String? _datetime = null;
   List<DropdownMenuItem<String>>? Sports = [];
-  getList() {
+
+  getList() {       //Do dropdownitemlist
     Sports = [];
     for (var u in widget.listSports) {
       Sports!.add(DropdownMenuItem(
@@ -68,7 +71,7 @@ class _RecordPageState extends State<RecordPage> {
       },
       child: Scaffold(
           appBar: AppBar(
-            title: Text("New Record"),
+            title: const Text("New Record"),
           ),
           body: Stack(
             children: <Widget>[
@@ -77,7 +80,7 @@ class _RecordPageState extends State<RecordPage> {
                   child: Form(
                       key: formKey,
                       child: Card(
-                        color: Color.fromARGB(255, 68, 163, 117),
+                        color: const Color.fromARGB(255, 68, 163, 117),
                         child: Padding(
                           padding:
                               const EdgeInsets.only(left: 16.0, right: 16.0),
@@ -91,7 +94,7 @@ class _RecordPageState extends State<RecordPage> {
                                       decoration: BoxDecoration(
                                           color: Colors.lightGreen,
                                           border: Border.all(
-                                              color: Color.fromARGB(
+                                              color: const Color.fromARGB(
                                                   255, 48, 48, 48)),
                                           borderRadius:
                                               BorderRadius.circular(10)),
@@ -99,11 +102,11 @@ class _RecordPageState extends State<RecordPage> {
                                         items: Sports,
                                         onChanged: dropDownCallBack,
                                         hint: _sport == null
-                                            ? Text("Select Sport")
+                                            ? const Text("Select Sport")
                                             : Text(_sport!),
                                       ),
                                     ),
-                                    SizedBox(
+                                    const SizedBox(
                                       width: 20,
                                     ),
                                     ElevatedButton(
@@ -117,9 +120,9 @@ class _RecordPageState extends State<RecordPage> {
                                             Navigator.pop(context);
                                           }
                                         },
-                                        child: Text('Add new Sport'))
+                                        child: const Text('Add new Sport'))
                                   ]),
-                              SizedBox(
+                              const SizedBox(
                                 height: height,
                               ),
                               Row(
@@ -129,12 +132,12 @@ class _RecordPageState extends State<RecordPage> {
                                       onPressed: () async {
                                         _date = await showDatePicker(
                                             context: context,
-                                            initialDate: dateTime,
+                                            initialDate: dateTime,          //Show this DateTime first
                                             firstDate: DateTime(2020),
                                             lastDate: DateTime.now());
                                       },
-                                      child: Text("Date")),
-                                  SizedBox(
+                                      child: const Text("Date")),
+                                  const SizedBox(
                                     width: 20,
                                   ),
                                   Text(_datetime!)
@@ -146,7 +149,7 @@ class _RecordPageState extends State<RecordPage> {
                                 decoration:
                                     const InputDecoration(labelText: "Time"),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: height,
                               ),
                               TextFormField(
@@ -164,7 +167,8 @@ class _RecordPageState extends State<RecordPage> {
                               ),
                               ElevatedButton(
                                   onPressed: () async {
-                                    FocusScope.of(context).unfocus();
+                                    FocusScope.of(context)
+                                        .unfocus(); //Unfocus so keyboard close
                                     bool pop = await _updateRecord();
                                     if (pop) {
                                       Navigator.of(context).pop();
@@ -172,18 +176,18 @@ class _RecordPageState extends State<RecordPage> {
                                       await showDialog(
                                           context: context,
                                           builder: (context) {
-                                            Future.delayed(Duration(seconds: 1),
+                                            Future.delayed(const Duration(seconds: 1),
                                                 () {
                                               Navigator.of(context).pop(true);
                                             });
-                                            return AlertDialog(
+                                            return const AlertDialog(
                                               title: Text(
                                                   'Fill all necessary fields, please'),
                                             );
                                           });
                                     }
                                   },
-                                  child: Text("Save record"))
+                                  child: const Text("Save record"))
                             ],
                           ),
                         ),
