@@ -66,7 +66,6 @@ class _NewRecordPageState extends State<NewRecordPage> {
                     child: Form(
                         key: formKey,
                         child: Card(
-                          color: Color.fromARGB(255, 68, 163, 117),
                           child: Padding(
                             padding:
                                 const EdgeInsets.only(left: 16.0, right: 16.0),

@@ -9,7 +9,7 @@ class AboutPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(automaticallyImplyLeading: false),
       body: Stack(children: <Widget>[
         Image.asset(
           "assets/backroundImage.jpg",

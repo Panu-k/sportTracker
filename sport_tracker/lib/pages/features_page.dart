@@ -22,9 +22,9 @@ class FeaturesPage extends StatelessWidget {
                 ),
               ),
               Center(child: Text("Works", style: TextStyle(fontSize: 24))),
-              Center(child: Text("Sing up")),
+              Center(child: Text("Sign up")),
               Center(child: Checkbox(value: true, onChanged: null)),
-              Center(child: Text("Sing up")),
+              Center(child: Text("Sign in")),
               Center(child: Checkbox(value: true, onChanged: null)),
               Center(
                 child: Text(
@@ -60,7 +60,7 @@ class FeaturesPage extends StatelessWidget {
                 "Modify personal \n data in settings",
                 maxLines: 2,
               )),
-              Center(child: Checkbox(value: true, onChanged: null)),
+              Center(child: Checkbox(value: false, onChanged: null)),
               Center(child: Text("Load sports from server")),
               Center(child: Checkbox(value: true, onChanged: null)),
             ]),

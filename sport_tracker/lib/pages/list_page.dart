@@ -35,9 +35,7 @@ class _ListPage extends State<ListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       drawer: Drawer(),
-      appBar: AppBar(
-        title: Text("Records"),
-      ),
+      appBar: AppBar(title: Text("Records"), automaticallyImplyLeading: false),
       body: FutureBuilder(
         future: _getRecords(),
         builder: (BuildContext context, AsyncSnapshot snapshot) {

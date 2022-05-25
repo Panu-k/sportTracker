@@ -44,7 +44,7 @@ class SingupPage extends StatelessWidget {
                                   DecoratedBox(
                                       decoration: BoxDecoration(
                                           color: col,
-                                          border: Border.all(color: borcol),
+                                          border: Border.all(color: Colors.red),
                                           borderRadius:
                                               BorderRadius.circular(radius)),
                                       child: Padding(
@@ -146,18 +146,6 @@ class SingupPage extends StatelessWidget {
                                         FocusScope.of(context).unfocus();
                                         var res = await _NewUser();
                                         if (res == "Succesful") {
-                                          showDialog(
-                                              context: context,
-                                              builder: (context) {
-                                                Future.delayed(
-                                                    Duration(seconds: 2), () {
-                                                  Navigator.of(context)
-                                                      .pop(true);
-                                                });
-                                                return AlertDialog(
-                                                  title: Text(res),
-                                                );
-                                              });
                                           Navigator.pop(context);
                                         } else if (res
                                             .toString()

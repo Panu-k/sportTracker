@@ -33,7 +33,8 @@ class _RecordPageState extends State<RecordPage> {
   String? _datetime = null;
   List<DropdownMenuItem<String>>? Sports = [];
 
-  getList() {       //Do dropdownitemlist
+  getList() {
+    //Do dropdownitemlist
     Sports = [];
     for (var u in widget.listSports) {
       Sports!.add(DropdownMenuItem(
@@ -80,7 +81,6 @@ class _RecordPageState extends State<RecordPage> {
                   child: Form(
                       key: formKey,
                       child: Card(
-                        color: const Color.fromARGB(255, 68, 163, 117),
                         child: Padding(
                           padding:
                               const EdgeInsets.only(left: 16.0, right: 16.0),
@@ -132,7 +132,8 @@ class _RecordPageState extends State<RecordPage> {
                                       onPressed: () async {
                                         _date = await showDatePicker(
                                             context: context,
-                                            initialDate: dateTime,          //Show this DateTime first
+                                            initialDate:
+                                                dateTime, //Show this DateTime first
                                             firstDate: DateTime(2020),
                                             lastDate: DateTime.now());
                                       },
@@ -176,8 +177,8 @@ class _RecordPageState extends State<RecordPage> {
                                       await showDialog(
                                           context: context,
                                           builder: (context) {
-                                            Future.delayed(const Duration(seconds: 1),
-                                                () {
+                                            Future.delayed(
+                                                const Duration(seconds: 1), () {
                                               Navigator.of(context).pop(true);
                                             });
                                             return const AlertDialog(
